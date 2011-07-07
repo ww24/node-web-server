@@ -1,3 +1,11 @@
+/*
+	Node.js HTTP/1.1 Server
+	
+	2011-06-19
+	beta 0.9.9
+	@ww24
+	LICENSE　MIT
+*/
 // 先頭および末尾の空白を削除
 String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g, '');
@@ -30,7 +38,7 @@ var logging = function(file, log) {
 		} else {
 			obj[0] = log;
 		}
-		fs.writeFile(file, JSON.stringify(obj), encoding='utf8');
+		fs.writeFileSync(file, JSON.stringify(obj), encoding='utf8');
 	});
 };
 
@@ -73,19 +81,35 @@ http.createServer(function (req, res) {
 			body = 'Forbidden\n' + path;
 		}
 		
-		res.writeHead(statusCode, {
-			'Content-Type': contentType,
-			'Content-Length': body.length
-		});
-		res.end(body);
+		//res.setHeader("Date", getDateFormat());
+		res.setHeader('Server', 'node-web-server');
+		res.setHeader('Connection', 'close');
+		
+		if (settings.xss_protect) {
+			res.setHeader('X-XSS-Protection', '1; mode=block');
+			res.setHeader('X-Frame-Options', 'DENY');
+		}
+		
+		var method = req.method;
+		if (method == "GET" || method == "POST") {
+			res.writeHead(statusCode, {
+				'Content-Type': contentType,
+				'Content-Length': body.length
+			});
+			res.write(body);
+		} else {
+			res.writeHead(statusCode);
+		}
+		res.end();
 		
 		// Logging
 		if (settings.logFile !== false) {
 			logging(settings.logFile, {
-				"date"		: getDateFormat(),
-				"url"		: req.url,
-				"statusCode": statusCode,
-				"error"		: errorLog.trim(),
+				date		: getDateFormat(),
+				method		: method,
+				url			: req.url,
+				statusCode	: statusCode,
+				error		: errorLog.trim(),
 			});
 		}
 	});
