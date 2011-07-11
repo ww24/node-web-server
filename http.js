@@ -1,11 +1,8 @@
-/*
-	Node.js HTTP/1.1 Server
-	
-	2011-06-19
-	beta 0.9.9
-	@ww24
-	LICENSE　MIT
-*/
+/**
+ * node-web-server
+ * @source	https://github.com/ww24/node-web-server
+ * @license	MIT License
+ */
 // 先頭および末尾の空白を削除
 String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g, '');
