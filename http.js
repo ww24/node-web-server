@@ -3,29 +3,34 @@
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
  */
-// 先頭および末尾の空白を削除
-String.prototype.trim = function() {
-	return this.replace(/^\s+|\s+$/g, '');
-};
+var http = require('http'),
+	path = require('path'),
+	url = require('url'),
+	fs = require('fs');
 
+// Get Date (Sun, Aug 07 2011 00:00:00 GMT+0000) 
 var getDateFormat = function(set) {
-	var date = (typeof(set) == "undefined")? new Date() : new Date(set);
-	// 2桁表示変換 7->07 正負対応
+	var date = (typeof(set) == 'undefined')? new Date() : new Date(set);
+	// Convert to Double-digit (-7 → 07) toString
 	var tt = function(t) {
 		var abs = Math.abs(t);
-		return (abs < 10)? (t < 0)? "-0"+abs : "0"+t : t;
+		return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
 	};
-	var timezoneOffset = parseInt(-date.getTimezoneOffset()/60);
+	var timezoneOffset = date.getTimezoneOffset();
+	var timezoneOffsetH = tt(parseInt(timezoneOffset/60))
+	var timezoneOffsetM = tt(timezoneOffset%60);
 	var format = [
-		["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()],
+		["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]+",",
 		["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()],
-		date.getDate(),
-		tt(date.getHours())+":"+tt(date.getMinutes())+":"+tt(date.getSeconds()),
-		(timezoneOffset < 0)?"":"+"+tt(timezoneOffset)+tt(-date.getTimezoneOffset()-timezoneOffset*60),
-		date.getFullYear()
+		tt(date.getDate()),
+		date.getFullYear(),
+		tt(date.getHours())+':'+tt(date.getMinutes())+':'+tt(date.getSeconds()),
+		'GMT'+((timezoneOffsetH < 0)?'':'+')+timezoneOffsetH+timezoneOffsetM
 	];
 	return format.join(" ");
 };
+
+// Logging (JSON)
 var logging = function(file, log) {
 	fs.readFile(file, 'utf8', function(err, data) {
 		obj = [];
@@ -39,54 +44,59 @@ var logging = function(file, log) {
 	});
 };
 
-var http = require('http'),
-	fs = require('fs'),
-	exec = require('child_process').exec;
-
 // Settings File Load
-var settings = JSON.parse(fs.readFileSync('http.conf', 'utf8'));
+var settings = JSON.parse(fs.readFileSync(path.join(__dirname, 'http.conf'), 'utf8'));
+settings.docRoot = path.join(__dirname, settings.docRoot);
+var logFile = settings.logFile;
+if (logFile !== false) {
+	logFile = path.join(__dirname, settings.logFile);
+	settings.logFile = true;
+}
 
+// Create HTTP Server
 http.createServer(function (req, res) {
-	var url = require('url').parse(req.url),
-		path,
-		ext,
-		errorLog = '';
-	if (url.pathname == '/') {
-		path = settings.defFile;
-	} else {
-		path = url.pathname;
-	}
-	ext = path.match(/\.[A-Z0-9]+$/i);
-	var filePath = settings.docRoot + path;
+	var date = getDateFormat(),
+		filePath = url.parse(req.url).pathname,
+		ext;
 	
-	exec('ls ' + filePath, function(error, stdout, stderr) {
+	// Get Request File Path
+	if (filePath == '/') {
+		filePath = settings.defFile;
+	}
+	ext = path.extname(filePath);
+	filePath = path.join(settings.docRoot, filePath);
+	
+	// Check Request File Exists
+	path.exists(filePath, function(exists) {
 		var statusCode = 200,
 			contentType = 'text/plain',
 			body　= '';
-			
+		
+		// Check MIME Type
 		if (ext in settings.MIME) {
-			if　(error　!== null) {
-				statusCode = 404;
-				body = 'Not Found\n' + path;
-				errorLog += 'exec error: ' + error;
-			} else {
+			if　(exists) {
 				contentType = settings.MIME[ext];
 				body = fs.readFileSync(filePath);
+			} else {
+				statusCode = 404;
+				body = 'Not Found\n' + filePath;
 			}
 		} else {
 			statusCode = 403;
-			body = 'Forbidden\n' + path;
+			body = 'Forbidden\n' + filePath;
 		}
 		
-		//res.setHeader("Date", getDateFormat());
+		// HTTP Header
+		res.setHeader("Date", date);
 		res.setHeader('Server', 'node-web-server');
-		res.setHeader('Connection', 'close');
-		
-		if (settings.xss_protect) {
-			res.setHeader('X-XSS-Protection', '1; mode=block');
-			res.setHeader('X-Frame-Options', 'DENY');
+		var headers = settings.httpHeaders;
+		for (key in headers) {
+			if (headers.hasOwnProperty(key)) {
+				res.setHeader(key, headers[key]);
+			}
 		}
 		
+		// Check HTTP Method
 		var method = req.method;
 		if (method == "GET" || method == "POST") {
 			res.writeHead(statusCode, {
@@ -100,13 +110,12 @@ http.createServer(function (req, res) {
 		res.end();
 		
 		// Logging
-		if (settings.logFile !== false) {
-			logging(settings.logFile, {
-				date		: getDateFormat(),
+		if (settings.logFile) {
+			logging(logFile, {
+				date		: date,
 				method		: method,
 				url			: req.url,
-				statusCode	: statusCode,
-				error		: errorLog.trim(),
+				statusCode	: statusCode
 			});
 		}
 	});
