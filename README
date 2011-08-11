@@ -11,7 +11,8 @@ http.conf
 	"port"			: ポート番号,
 	"docRoot"		: ドキュメントルート(相対パス),
 	"defFile"		: デフォルトのインデックスファイル,
-	"logFile"		: ログファイル(相対パス) or false,
+	"accesslog"		: HTTPリクエストのログファイル(相対パス) or false,
+	"errorLog"		: エラー発生時のログファイル(相対パス) or false,
 	"httpHeaders"	: {
 		HTTPヘッダー
 	},

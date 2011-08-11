@@ -2,6 +2,7 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
+ * @version	1.0.0
  */
 var http = require('http'),
 	path = require('path'),
@@ -47,10 +48,20 @@ var logging = function(file, log) {
 // Settings File Load
 var settings = JSON.parse(fs.readFileSync(path.join(__dirname, 'http.conf'), 'utf8'));
 settings.docRoot = path.join(__dirname, settings.docRoot);
-var logFile = settings.logFile;
+var logFile = settings.accessLog;
 if (logFile !== false) {
-	logFile = path.join(__dirname, settings.logFile);
-	settings.logFile = true;
+	logFile = path.join(__dirname, settings.accessLog);
+	settings.accessLog = true;
+}
+
+// Error logging
+if (settings.errorLog !== false) {
+	process.on('uncaughtException', function(err) {
+		logging(path.join(__dirname, settings.errorLog), {
+			date	: getDateFormat(),
+			error	: err
+		});
+	});
 }
 
 // Create HTTP Server
@@ -110,7 +121,7 @@ http.createServer(function (req, res) {
 		res.end();
 		
 		// Logging
-		if (settings.logFile) {
+		if (settings.accessLog) {
 			logging(logFile, {
 				date		: date,
 				method		: method,
