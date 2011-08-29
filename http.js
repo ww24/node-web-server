@@ -81,11 +81,11 @@ http.createServer(function (req, res) {
 	path.exists(filePath, function(exists) {
 		var statusCode = 200,
 			contentType = 'text/plain',
-			body　= '';
+			body = '';
 		
 		// Check MIME Type
 		if (ext in settings.MIME) {
-			if　(exists) {
+			if (exists) {
 				contentType = settings.MIME[ext];
 				body = fs.readFileSync(filePath);
 			} else {
