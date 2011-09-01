@@ -26,3 +26,11 @@ http.conf
 ・アクセス制限
 ・CGI対応
 ・HTTPS対応
+
+history:
+
+2011/09/02: v1.0.1
+    bugfix
+
+2011/08/11: v1.0.0
+    Release

@@ -2,7 +2,7 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.0
+ * @version	1.0.1
  */
 var http = require('http'),
 	path = require('path'),
@@ -18,7 +18,7 @@ var getDateFormat = function(set) {
 		return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
 	};
 	var timezoneOffset = date.getTimezoneOffset();
-	var timezoneOffsetH = tt(parseInt(timezoneOffset/60))
+	var timezoneOffsetH = tt(parseInt(timezoneOffset/60, 10));
 	var timezoneOffsetM = tt(timezoneOffset%60);
 	var format = [
 		["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]+",",
@@ -101,7 +101,7 @@ http.createServer(function (req, res) {
 		res.setHeader("Date", date);
 		res.setHeader('Server', 'node-web-server');
 		var headers = settings.httpHeaders;
-		for (key in headers) {
+		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
 				res.setHeader(key, headers[key]);
 			}
