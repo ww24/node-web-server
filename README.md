@@ -8,6 +8,7 @@ GETとPOSTメソッドに対応しています。
 
 ##使用法
 http.conf
+
 	{
 		"host"			: ホスト名 or IPアドレス,
 		"port"			: ポート番号,
