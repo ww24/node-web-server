@@ -69,7 +69,7 @@ http.createServer(function (req, res) {
 	var date = getDateFormat(),
 		filePath = url.parse(req.url).pathname,
 		fullPath,
-        ext;
+		ext;
 	
 	// Get Request File Path
 	if (filePath == '/') {

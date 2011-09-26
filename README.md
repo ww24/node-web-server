@@ -8,20 +8,20 @@ GETとPOSTメソッドに対応しています。
 
 ##使用法
 http.conf
-    {
-    	"host"			: ホスト名 or IPアドレス,
-    	"port"			: ポート番号,
-    	"docRoot"		: ドキュメントルート(相対パス),
-    	"defFile"		: デフォルトのインデックスファイル,
-    	"accesslog"		: HTTPリクエストのログファイル(相対パス) or false,
-    	"errorLog"		: エラー発生時のログファイル(相対パス) or false,
-    	"httpHeaders"	: {
-    		HTTPヘッダー
-    	},
-    	"MIME"			: {
-    		MIMEタイプ
-    	}
-    }
+	{
+		"host"			: ホスト名 or IPアドレス,
+		"port"			: ポート番号,
+		"docRoot"		: ドキュメントルート(相対パス),
+		"defFile"		: デフォルトのインデックスファイル,
+		"accesslog"		: HTTPリクエストのログファイル(相対パス) or false,
+		"errorLog"		: エラー発生時のログファイル(相対パス) or false,
+		"httpHeaders"	: {
+			HTTPヘッダー
+		},
+		"MIME"			: {
+			MIMEタイプ
+		}
+	}
 
 ##今後、追加予定の機能
 - ログファイルの閲覧
