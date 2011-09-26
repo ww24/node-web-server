@@ -2,14 +2,14 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.1
+ * @version	1.0.2
  */
 var http = require('http'),
 	path = require('path'),
 	url = require('url'),
 	fs = require('fs');
 
-// Get Date (Sun, Aug 07 2011 00:00:00 GMT+0000) 
+// Get Date (Sun, Aug 07 2011 00:00:00 GMT+0000)
 var getDateFormat = function(set) {
 	var date = (typeof(set) == 'undefined')? new Date() : new Date(set);
 	// Convert to Double-digit (-7 → 07) toString
@@ -68,17 +68,18 @@ if (settings.errorLog !== false) {
 http.createServer(function (req, res) {
 	var date = getDateFormat(),
 		filePath = url.parse(req.url).pathname,
-		ext;
+		fullPath,
+        ext;
 	
 	// Get Request File Path
 	if (filePath == '/') {
 		filePath = settings.defFile;
 	}
 	ext = path.extname(filePath);
-	filePath = path.join(settings.docRoot, filePath);
+	fullPath = path.join(settings.docRoot, filePath);
 	
 	// Check Request File Exists
-	path.exists(filePath, function(exists) {
+	path.exists(fullPath, function(exists) {
 		var statusCode = 200,
 			contentType = 'text/plain',
 			body = '';
@@ -87,7 +88,7 @@ http.createServer(function (req, res) {
 		if (ext in settings.MIME) {
 			if (exists) {
 				contentType = settings.MIME[ext];
-				body = fs.readFileSync(filePath);
+				body = fs.readFileSync(fullPath);
 			} else {
 				statusCode = 404;
 				body = 'Not Found\n' + filePath;
@@ -99,7 +100,6 @@ http.createServer(function (req, res) {
 		
 		// HTTP Header
 		res.setHeader("Date", date);
-		res.setHeader('Server', 'node-web-server');
 		var headers = settings.httpHeaders;
 		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
@@ -131,4 +131,4 @@ http.createServer(function (req, res) {
 		}
 	});
 }).listen(settings.port, settings.host);
-console.log('Server running at  http://'+settings.host+':'+settings.port+'/');
+console.log('Server running at http://'+settings.host+':'+settings.port+'/');
