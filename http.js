@@ -2,7 +2,7 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.2
+ * @version	1.0.3
  */
 var http = require('http'),
 	path = require('path'),
@@ -33,16 +33,14 @@ var getDateFormat = function(set) {
 
 // Logging (JSON)
 var logging = function(file, log) {
-	fs.readFile(file, 'utf8', function(err, data) {
-		obj = [];
-		if (typeof(data) != 'undefined') {
-			obj = JSON.parse(data);
-			obj[obj.length] = log;
-		} else {
-			obj[0] = log;
-		}
-		fs.writeFileSync(file, JSON.stringify(obj), encoding='utf8');
-	});
+	var str = JSON.stringify(log),
+		fd = fs.openSync(file, 'a'),
+		position = fs.statSync(file).size;
+	if (position !== 0) {
+		str = '\n,' + str;
+	}
+	fs.writeSync(fd, str, position, encoding='utf8');
+	fs.closeSync(fd);
 };
 
 // Settings File Load

@@ -30,7 +30,18 @@ http.conf
 - CGI対応(外部jsの実行)
 - HTTPS対応
 
+##ログについて
+ログは下記のように記録されます。(アクセスログの例)
+	{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"/","statusCode":200}
+	,{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"style.css","statusCode":200}
+これを`[]`で囲むことで、JavaScriptの配列として扱えるため、
+	var obj = JSON.parse("[" + log + "]");
+としてJavaScriptオブジェクトとして読み込むことが出来ます。
+
 ##更新履歴 - History
+
+###v1.0.3: 2011/09/30
+- ロギング部分の修正。
 
 ###v1.0.2: 2011/09/26
 - エラーメッセージにドキュメントルートのフルパスが表示される脆弱性を修正。
