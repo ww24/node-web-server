@@ -32,10 +32,14 @@ http.conf
 
 ##ログについて
 ログは下記のように記録されます。(アクセスログの例)
+
 	{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"/","statusCode":200}
 	,{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"style.css","statusCode":200}
+
 これを`[]`で囲むことで、JavaScriptの配列として扱えるため、
+
 	var obj = JSON.parse("[" + log + "]");
+
 としてJavaScriptオブジェクトとして読み込むことが出来ます。
 
 ##更新履歴 - History
