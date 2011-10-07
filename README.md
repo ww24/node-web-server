@@ -13,7 +13,9 @@ http.conf
 		"host"			: ホスト名 or IPアドレス,
 		"port"			: ポート番号,
 		"docRoot"		: ドキュメントルート(相対パス),
-		"defFile"		: デフォルトのインデックスファイル,
+		"defFile"		: [
+			デフォルトのインデックスファイル
+		],
 		"accesslog"		: HTTPリクエストのログファイル(相対パス) or false,
 		"errorLog"		: エラー発生時のログファイル(相対パス) or false,
 		"httpHeaders"	: {
@@ -45,7 +47,7 @@ http.conf
 ##更新履歴 - History
 
 ###v1.0.4: 2011/10/07
-- URLルーティング部分の修正。
+- デフォルトインデックス(defFile)部分の修正。
 
 ###v1.0.3: 2011/09/30
 - ロギング部分の修正。

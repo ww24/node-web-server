@@ -62,19 +62,26 @@ if (settings.errorLog !== false) {
 	});
 }
 
+// Get Request File Path
+var getRequestFilePath = function (filePath) {
+	var fullPath = false;
+	if (filePath.slice(-1) === '/') {
+		for (var i = 0, l = settings.defFile.length; i < l; i++) {
+			fullPath = path.join(settings.docRoot, filePath, settings.defFile[i]);
+			if (path.existsSync(fullPath)) {
+				break;
+			}
+		}
+	}
+	return fullPath ? fullPath : path.join(settings.docRoot, filePath);
+};
+
 // Create HTTP Server
 http.createServer(function (req, res) {
 	var date = getDateFormat(),
 		filePath = url.parse(req.url).pathname,
-		fullPath,
-		ext;
-	
-	// Get Request File Path
-	if (filePath.slice(-1) === '/') {
-		filePath = settings.defFile;
-	}
-	ext = path.extname(filePath);
-	fullPath = path.join(settings.docRoot, filePath);
+		fullPath = getRequestFilePath(filePath),
+		ext = path.extname(fullPath);
 	
 	// Check Request File Exists
 	path.exists(fullPath, function(exists) {
