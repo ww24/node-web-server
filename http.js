@@ -2,7 +2,7 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.3
+ * @version	1.0.4
  */
 var http = require('http'),
 	path = require('path'),
@@ -70,7 +70,7 @@ http.createServer(function (req, res) {
 		ext;
 	
 	// Get Request File Path
-	if (filePath == '/') {
+	if (filePath.slice(-1) === '/') {
 		filePath = settings.defFile;
 	}
 	ext = path.extname(filePath);
