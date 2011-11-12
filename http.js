@@ -17,7 +17,7 @@ var getDateFormat = function(set) {
 			var abs = Math.abs(t);
 			return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
 		},
-		timezoneOffset = date.getTimezoneOffset(),
+		timezoneOffset = -date.getTimezoneOffset(),
 		timezoneOffsetH = tt(parseInt(timezoneOffset/60, 10)),
 		timezoneOffsetM = tt(timezoneOffset%60),
 		format = [
