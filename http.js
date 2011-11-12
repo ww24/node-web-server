@@ -2,38 +2,38 @@
  * node-web-server
  * @source	https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.4
+ * @version	1.0.5
  */
-var http = require('http'),
+var	http = require('http'),
 	path = require('path'),
 	url = require('url'),
 	fs = require('fs');
 
-// Get Date (Sun, Aug 07 2011 00:00:00 GMT+0000)
+// Get Date (Sun, Aug 07 2011 00:00:00 +0000)RFC1123
 var getDateFormat = function(set) {
-	var date = (typeof(set) == 'undefined')? new Date() : new Date(set);
-	// Convert to Double-digit (-7 → 07) toString
-	var tt = function(t) {
-		var abs = Math.abs(t);
-		return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
-	};
-	var timezoneOffset = date.getTimezoneOffset();
-	var timezoneOffsetH = tt(parseInt(timezoneOffset/60, 10));
-	var timezoneOffsetM = tt(timezoneOffset%60);
-	var format = [
-		["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]+",",
-		["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()],
-		tt(date.getDate()),
-		date.getFullYear(),
-		tt(date.getHours())+':'+tt(date.getMinutes())+':'+tt(date.getSeconds()),
-		'GMT'+((timezoneOffsetH < 0)?'':'+')+timezoneOffsetH+timezoneOffsetM
-	];
+	var	date = (typeof(set) == 'undefined')? new Date() : new Date(set),
+		// Convert to Double-digit (-7 → 07) toString
+		tt = function(t) {
+			var abs = Math.abs(t);
+			return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
+		},
+		timezoneOffset = date.getTimezoneOffset(),
+		timezoneOffsetH = tt(parseInt(timezoneOffset/60, 10)),
+		timezoneOffsetM = tt(timezoneOffset%60),
+		format = [
+			["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]+",",
+			["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()],
+			tt(date.getDate()),
+			date.getFullYear(),
+			tt(date.getHours())+':'+tt(date.getMinutes())+':'+tt(date.getSeconds()),
+			((timezoneOffsetH < 0)?'':'+')+timezoneOffsetH+timezoneOffsetM
+		];
 	return format.join(" ");
 };
 
 // Logging (JSON)
 var logging = function(file, log) {
-	var str = JSON.stringify(log),
+	var	str = JSON.stringify(log),
 		fd = fs.openSync(file, 'a'),
 		position = fs.statSync(file).size;
 	if (position !== 0) {
@@ -78,14 +78,14 @@ var getRequestFilePath = function (filePath) {
 
 // Create HTTP Server
 http.createServer(function (req, res) {
-	var date = getDateFormat(),
+	var	date = getDateFormat(),
 		filePath = url.parse(req.url).pathname,
 		fullPath = getRequestFilePath(filePath),
 		ext = path.extname(fullPath);
 	
 	// Check Request File Exists
 	path.exists(fullPath, function(exists) {
-		var statusCode = 200,
+		var	statusCode = 200,
 			contentType = 'text/plain',
 			body = '';
 		
