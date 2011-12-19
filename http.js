@@ -1,13 +1,53 @@
 /**
  * node-web-server
- * @source	https://github.com/ww24/node-web-server
+ * @source    https://github.com/ww24/node-web-server
  * @license	MIT License
- * @version	1.0.5
+ * @version	1.0.6
  */
 var	http = require('http'),
 	path = require('path'),
 	url = require('url'),
 	fs = require('fs');
+
+// Configure
+var configure = function (settingsFile) {
+	// Load Settings File
+	var settings = JSON.parse(fs.readFileSync(settingsFile, 'utf8'));
+	// host, port Settings
+	var	items = [settings.host, settings.port],
+		item = '',
+		points = [],
+		point = '',
+		pointer = 0,
+		i, j;
+	for (i = 0; items.length > i; i++) {
+		item = items[i];
+		if (typeof(item) === 'string' && item.indexOf('process.env.') !== -1) {
+			points = item.split('||');
+			for (j = 0; points.length > j; j++) {
+				point = points[j].replace(/^\s+|\s+|'+|"+$/g, '');
+				pointer = point.indexOf('process.env.');
+				if (pointer !== -1) {
+					point = process.env[point.slice(pointer + 12)];
+				}
+				if (typeof(point) !== "undefined") break;
+			}
+			items[i] = point;
+		}
+	}
+	settings.host = items[0];
+	settings.port = items[1];
+	// DocRoot Setting
+	settings.docRoot = path.join(__dirname, settings.docRoot);
+	// AccessLog Setting
+	var logFile = settings.accessLog;
+	if (logFile !== false) {
+		logFile = path.join(__dirname, settings.accessLog);
+		settings.accessLog = true;
+	}
+	return settings;
+};
+var settings = configure(path.join(__dirname, 'http.conf'));
 
 // Get Date (Sun, Aug 07 2011 00:00:00 +0000)RFC1123
 var getDateFormat = function(set) {
@@ -39,18 +79,9 @@ var logging = function(file, log) {
 	if (position !== 0) {
 		str = '\n,' + str;
 	}
-	fs.writeSync(fd, str, position, encoding='utf8');
+	fs.writeSync(fd, str, position, 'utf8');
 	fs.closeSync(fd);
 };
-
-// Settings File Load
-var settings = JSON.parse(fs.readFileSync(path.join(__dirname, 'http.conf'), 'utf8'));
-settings.docRoot = path.join(__dirname, settings.docRoot);
-var logFile = settings.accessLog;
-if (logFile !== false) {
-	logFile = path.join(__dirname, settings.accessLog);
-	settings.accessLog = true;
-}
 
 // Error logging
 if (settings.errorLog !== false) {

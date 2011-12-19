@@ -2,16 +2,17 @@ node-web-server
 ===
 
 Nodeの勉強のために書いたHTTPサーバです。
-リクエストされたファイルを返します。
-MIME Typeに登録されていないファイルがリクエストされると403 Forbiddenを返します。
-GETとPOSTメソッドに対応しています。
+
+- リクエストされたファイルを返します。
+- MIME Typeに登録されていないファイルがリクエストされると403 Forbiddenを返します。
+- GETとPOSTメソッドに対応しています。
 
 ##使用法
 http.conf
 
 	{
-		"host"			: ホスト名 or IPアドレス,
-		"port"			: ポート番号,
+		"host"			: ホスト名 or IPアドレス or 環境変数(process.env.*),
+		"port"			: ポート番号 or 環境変数(process.env.*),
 		"docRoot"		: ドキュメントルート(相対パス),
 		"defFile"		: [
 			デフォルトのインデックスファイル
@@ -25,6 +26,16 @@ http.conf
 			MIMEタイプ
 		}
 	}
+
+ex. Cloud Foundry
+
+	{
+		"host"			: "process.env.VMC_APP_HOST || 'localhost'",
+		"port"			: "process.env.VMC_APP_PORT || 3000",
+		<The rest is omitted>
+
+'||'演算子を使うことができます。
+You can use '||' operator.
 
 ##今後、追加予定の機能
 - ログファイルの閲覧
@@ -45,6 +56,9 @@ http.conf
 としてJavaScriptオブジェクトとして読み込むことが出来ます。
 
 ##更新履歴 - History
+
+###v1.0.6: 2011/12/19
+- Settings Fileでホスティングサービスの環境変数(process.env.*)に対応。
 
 ###v1.0.5: 2011/11/12
 - Date formatの修正。(RFC1123)
