@@ -1,8 +1,9 @@
 /**
  * node-web-server
- * @source    https://github.com/ww24/node-web-server
- * @license	MIT License
- * @version	1.0.6
+ * @source		https://github.com/ww24/node-web-server
+ * @license		MIT License
+ * @copyright	ww24
+ * @version		1.0.7
  */
 var	http = require('http'),
 	path = require('path'),
@@ -40,10 +41,8 @@ var configure = function (settingsFile) {
 	// DocRoot Setting
 	settings.docRoot = path.join(__dirname, settings.docRoot);
 	// AccessLog Setting
-	var logFile = settings.accessLog;
-	if (logFile !== false) {
-		logFile = path.join(__dirname, settings.accessLog);
-		settings.accessLog = true;
+	if (settings.accessLog !== false) {
+		settings.accessLog = path.join(__dirname, settings.accessLog);
 	}
 	return settings;
 };
@@ -94,40 +93,76 @@ if (settings.errorLog !== false) {
 }
 
 // Get Request File Path
-var getRequestFilePath = function (filePath) {
-	var fullPath = false;
-	if (filePath.slice(-1) === '/') {
-		for (var i = 0, l = settings.defFile.length; i < l; i++) {
-			fullPath = path.join(settings.docRoot, filePath, settings.defFile[i]);
-			if (path.existsSync(fullPath)) {
-				break;
+var getRequestFilePath = function (filePath, callback) {
+	var getPath = function (filePath) {
+		var	fullPath = false,
+			endChar = filePath.slice(-1);
+		
+		if (endChar === '/' || endChar === '\\') {
+			for (var i = 0, l = settings.defFile.length; i < l; i++) {
+				fullPath = path.join(filePath, settings.defFile[i]);
+				if (path.existsSync(fullPath)) {
+					break;
+				}
 			}
+		} else if (fs.statSync(filePath).isDirectory()) {
+			return 'redirect';
 		}
-	}
-	return fullPath ? fullPath : path.join(settings.docRoot, filePath);
+		return fullPath ? fullPath : filePath;
+	};
+	// Check Request File Exists
+	filePath = path.join(settings.docRoot, filePath);
+	path.exists(filePath, function (exists) {
+		var	fullPath = 'not_exist',
+			ext = false;
+		if (exists) {
+			fullPath = getPath(filePath);
+			ext = (fullPath !== 'redirect') ? path.extname(fullPath) : false;
+		}
+		callback(fullPath, ext);
+	});
 };
 
 // Create HTTP Server
 http.createServer(function (req, res) {
-	var	date = getDateFormat(),
-		filePath = url.parse(req.url).pathname,
-		fullPath = getRequestFilePath(filePath),
-		ext = path.extname(fullPath);
+	var	filePath = url.parse(req.url).pathname,
+		normalizePath = path.normalize(filePath);
 	
-	// Check Request File Exists
-	path.exists(fullPath, function(exists) {
-		var	statusCode = 200,
+	// Normalize URL
+	if (filePath.length !== normalizePath.length) {
+		res.writeHead(301, {
+			'Location': normalizePath
+		});
+		res.end();
+		return false;
+	}
+	
+	// Get File Path
+	getRequestFilePath(normalizePath, function(fullPath, ext) {
+		var	date = getDateFormat(),
+			statusCode = 200,
 			contentType = 'text/plain',
 			body = '';
 		
 		// Check MIME Type
-		if (ext in settings.MIME) {
-			if (exists) {
-				contentType = settings.MIME[ext];
-				body = fs.readFileSync(fullPath);
-			} else {
-				statusCode = 404;
-				body = 'Not Found\n' + filePath;
+		if (ext === false || ext in settings.MIME) {
+			switch (fullPath) {
+				case 'redirect':
+					res.writeHead(301, {
+						'Location': filePath + '/'
+					});
+					res.end();
+					return false;
+				
+				case 'not_exist':
+					statusCode = 404;
+					body = 'Not Found\n' + filePath;
+					break;
+				
+				default:
+					contentType = settings.MIME[ext];
+					body = fs.readFileSync(fullPath);
+					break;
 			}
 		} else {
 			statusCode = 403;
@@ -157,8 +192,8 @@ http.createServer(function (req, res) {
 		res.end();
 		
 		// Logging
-		if (settings.accessLog) {
-			logging(logFile, {
+		if (settings.accessLog !== false) {
+			logging(settings.accessLog, {
 				date		: date,
 				method		: method,
 				url			: req.url,

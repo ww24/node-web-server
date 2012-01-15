@@ -57,6 +57,10 @@ You can use '||' operator.
 
 ##更新履歴 - History
 
+###v1.0.7: 2012/01/15
+- URLの扱いを改善しました。(#1)
+- access.logが生成されないバグを改善しました。
+
 ###v1.0.6: 2011/12/19
 - Settings Fileでホスティングサービスの環境変数(process.env.*)に対応。
 
