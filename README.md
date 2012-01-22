@@ -30,8 +30,15 @@ http.conf
 ex. Cloud Foundry
 
 	{
-		"host"			: "process.env.VMC_APP_HOST || 'localhost'",
-		"port"			: "process.env.VMC_APP_PORT || 3000",
+		"host"			: "0.0.0.0",
+		"port"			: "process.env.VCAP_APP_PORT || 3000",
+		<The rest is omitted>
+
+ex. Heroku
+
+	{
+		"host"			: "0.0.0.0",
+		"port"			: "process.env.PORT || 3000",
 		<The rest is omitted>
 
 '||'演算子を使うことができます。
@@ -56,6 +63,9 @@ You can use '||' operator.
 としてJavaScriptオブジェクトとして読み込むことが出来ます。
 
 ##更新履歴 - History
+
+###v1.0.8: 2012/01/22
+- Date Formatの間違いを修正しました。
 
 ###v1.0.7: 2012/01/15
 - URLの扱いを改善しました。(#1)

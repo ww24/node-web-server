@@ -3,7 +3,7 @@
  * @source		https://github.com/ww24/node-web-server
  * @license		MIT License
  * @copyright	ww24
- * @version		1.0.7
+ * @version		1.0.8
  */
 var	http = require('http'),
 	path = require('path'),
@@ -48,23 +48,22 @@ var configure = function (settingsFile) {
 };
 var settings = configure(path.join(__dirname, 'http.conf'));
 
-// Get Date (Sun, Aug 07 2011 00:00:00 +0000)RFC1123
-var getDateFormat = function(set) {
+// Get Date RFC1123(Sun, 22 Jan 2012 00:00:00 +0000)
+var getDateRFC1123 = function(set) {
 	var	date = (typeof(set) == 'undefined')? new Date() : new Date(set),
-		// Convert to Double-digit (-7 → 07) toString
-		tt = function(t) {
-			var abs = Math.abs(t);
-			return String((abs < 10)? (t < 0)? '-0'+abs : '0'+t : t);
+		// Convert to Double-digit (7 → 07) toString
+		dd = function(t) {
+			return String('0' + t).slice(-2);
 		},
 		timezoneOffset = -date.getTimezoneOffset(),
-		timezoneOffsetH = tt(parseInt(timezoneOffset/60, 10)),
-		timezoneOffsetM = tt(timezoneOffset%60),
+		timezoneOffsetH = dd(parseInt(timezoneOffset/60, 10)),
+		timezoneOffsetM = dd(timezoneOffset%60),
 		format = [
 			["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]+",",
+			dd(date.getDate()),
 			["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()],
-			tt(date.getDate()),
 			date.getFullYear(),
-			tt(date.getHours())+':'+tt(date.getMinutes())+':'+tt(date.getSeconds()),
+			dd(date.getHours())+':'+dd(date.getMinutes())+':'+dd(date.getSeconds()),
 			((timezoneOffsetH < 0)?'':'+')+timezoneOffsetH+timezoneOffsetM
 		];
 	return format.join(" ");
@@ -86,7 +85,7 @@ var logging = function(file, log) {
 if (settings.errorLog !== false) {
 	process.on('uncaughtException', function(err) {
 		logging(path.join(__dirname, settings.errorLog), {
-			date	: getDateFormat(),
+			date	: getDateRFC1123(),
 			error	: err
 		});
 	});
@@ -139,7 +138,7 @@ http.createServer(function (req, res) {
 	
 	// Get File Path
 	getRequestFilePath(normalizePath, function(fullPath, ext) {
-		var	date = getDateFormat(),
+		var	date = getDateRFC1123(),
 			statusCode = 200,
 			contentType = 'text/plain',
 			body = '';
