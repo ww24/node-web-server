@@ -3,7 +3,7 @@
  * @source		https://github.com/ww24/node-web-server
  * @license		MIT License
  * @copyright	ww24
- * @version		1.0.8
+ * @version		1.0.9
  */
 var	http = require('http'),
 	path = require('path'),
@@ -100,9 +100,8 @@ var getRequestFilePath = function (filePath, callback) {
 		if (endChar === '/' || endChar === '\\') {
 			for (var i = 0, l = settings.defFile.length; i < l; i++) {
 				fullPath = path.join(filePath, settings.defFile[i]);
-				if (path.existsSync(fullPath)) {
-					break;
-				}
+				if (path.existsSync(fullPath)) break;
+				else fullPath = false;
 			}
 		} else if (fs.statSync(filePath).isDirectory()) {
 			return 'redirect';
