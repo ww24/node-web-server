@@ -6,9 +6,32 @@ Nodeの勉強のために書いたHTTPサーバです。
 - リクエストされたファイルを返します。
 - MIME Typeに登録されていないファイルがリクエストされると403 Forbiddenを返します。
 - GETとPOSTメソッドに対応しています。
+- コマンドラインで実行可能。
+- 他のアプリから呼び出し可能。
 
-##使用法
-http.conf
+##インストール - Installation
+
+	$ npm install -g node-web-server
+
+##使用法 - Usage
+
+###Command line
+
+	$ nws localhost:8080
+
+###Script
+
+	var nws = require('nws');
+	// 起動
+	nws.run({
+		host: "localhost",
+		port: 8000
+	});
+	// 10秒後に停止
+	setTimeout(nws.stop, 10000);
+
+##設定 - Settings
+/lib/http.conf
 
 	{
 		"host"			: ホスト名 or IPアドレス or 環境変数(process.env.*),
@@ -50,19 +73,32 @@ You can use '||' operator.
 - CGI対応(外部jsの実行)
 - HTTPS対応
 
-##ログについて
+##ログ - Logging
 ログは下記のように記録されます。(アクセスログの例)
 
-	{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"/","statusCode":200}
-	,{"date":"Fri, Sep 30 2011 20:26:11 GMT-0900","method":"GET","url":"style.css","statusCode":200}
+	{
+		"date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
+		"method":"GET",
+		"url":"/",
+		"statusCode":200
+	}
+	,{
+		"date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
+		"method":"GET",
+		"url":"style.css",
+		"statusCode":200
+	}
 
-これを`[]`で囲むことで、JavaScriptの配列として扱えるため、
+これを`[]`で囲むことで、JavaScriptの配列として読み込むことが出来ます。
 
 	var obj = JSON.parse("[" + log + "]");
 
-としてJavaScriptオブジェクトとして読み込むことが出来ます。
 
 ##更新履歴 - History
+
+###v1.1.0: 2012/03/25
+- モジュール化し、他のアプリに組み込めるようにしました。
+- #4 コマンドラインからの実行も可能。
 
 ###v1.0.9: 2012/02/07
 - fix #3 URL周りのバグを修正しました。

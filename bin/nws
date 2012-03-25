@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var	path = require('path'),
+	nws = require('../lib/index.js'),
+	hostport = process.argv[2] && process.argv[2].split(':'),
+	host = hostport && hostport[1] && hostport[0],
+	port = hostport && (hostport[1] ? hostport[1] : hostport[0]),
+	settings = {};
+
+if (host) settings.host = host;
+if (port) settings.port = port;
+settings.docRoot = path.resolve('./');
+
+nws.run(settings);

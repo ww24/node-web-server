@@ -1,7 +1,32 @@
 {
   "name": "node-web-server",
   "description": "Node.js Web Server",
-  "version": "1.0.9",
+  "keywords": [
+    "server",
+    "webserver"
+  ],
+  "version": "1.1.0",
+  "author": {
+    "name": "ww24",
+    "url": "http://ww24.info"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "main": "./lib/index.js",
+  "bin": {
+    "nws": "./bin/nws"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "dependencies": {},
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/ww24/node-web-server/master/LICENSE"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ww24/node-web-server"
