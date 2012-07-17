@@ -3,9 +3,10 @@
   "description": "Node.js Web Server",
   "keywords": [
     "server",
-    "webserver"
+    "webserver",
+    "web-server"
   ],
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": {
     "name": "ww24",
     "url": "http://ww24.info"
