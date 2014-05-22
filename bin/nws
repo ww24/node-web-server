@@ -1,81 +1,81 @@
 #!/usr/bin/env node
 
-var    path = require('path'),
-    fs = require('fs'),
-	nws = require('../lib/index.js'),
-	argv = process.argv,
-	settings = {};
+var path = require("path"),
+    fs = require("fs"),
+    nws = require("../lib/index.js"),
+    argv = process.argv,
+    settings = {};
 
 exists = fs.exists || path.exists;
 
 function stdout(str) {
-	str = typeof str === 'string' ? str.split('\n') : str.concat('');
-	process.stdout.write(str.join('\n'));
+  str = typeof str === "string" ? str.split("\n") : str.concat("");
+  process.stdout.write(str.join("\n"));
 }
 
 switch (argv[2] || false) {
-	// help
-	case '-h':
-		stdout([
-			'node-web-server command line interface'
-			,''
-			,'Usage: nws [options]'
-			,''
-			,'Options:'
-			,'  -h             print this help'
-			,'  -v             print node-web-server\'s version'
-			,'  -d [http.conf] copy default config file'
-			,'  -c [http.conf] load config file & run server'
-			,'  host:port      run server at host:port'
-		]);
-		break;
-	// version
-	case '-v':
-		stdout([nws.version]);
-		break;
-	// template
-	case '-d':
-		var conf = argv[3] || 'http.conf';
-		exists(conf, function (exist) {
-			if (! exist) {
-				var settings = fs.readFileSync(nws.config);
-				fs.writeFileSync(conf, settings, 'utf8');
-				stdout(['Create a config file "' + conf + '"']);
-			} else {
-				stdout(['"' + conf + '" already exists. Please change filename.']);
-			}
-		});
-		break;
-	// config
-	case '-c':
-		var conf = argv[3] || 'http.conf';
-		exists(conf, function (exist) {
-			if (exist)
-				nws.run(conf);
-			else
-				stdout(['"' + conf + '" is not found.']);
-		});
-		break;
-	// not set options
-	case false:
-		var conf = 'http.conf';
-		exists(conf, function (exist) {
-			if (exist)
-				nws.run(conf);
-			else
-				nws.run({docRoot: './'});
-		});
-		break;
-	// host:port
-	default:
-		var hostport = argv[2] && argv[2].split(':'),
-			host = hostport && hostport[1] && hostport[0],
-			port = hostport && (hostport[1] ? hostport[1] : hostport[0]);
-			
-		if (host) settings.host = host;
-		if (port) settings.port = port;
-		settings.docRoot = './';
-		
-		nws.run(settings);
-		break;
+  // help
+  case "-h":
+    stdout([
+      "node-web-server command line interface"
+      ,""
+      ,"Usage: nws [options]"
+      ,""
+      ,"Options:"
+      ,"  -h             print this help"
+      ,"  -v             print version"
+      ,"  -d [http.conf] copy default config file"
+      ,"  -c [http.conf] load config file & run server"
+      ,"  host:port      run server at host:port"
+    ]);
+    break;
+  // version
+  case "-v":
+    stdout([nws.version]);
+    break;
+  // template
+  case "-d":
+    var conf = argv[3] || "http.conf";
+    exists(conf, function (exist) {
+      if (! exist) {
+        var settings = fs.readFileSync(nws.config);
+        fs.writeFileSync(conf, settings, "utf8");
+        stdout(["Create a config file \"" + conf + "\""]);
+      } else {
+        stdout(["\"" + conf + "\" already exists. Please change filename."]);
+      }
+    });
+    break;
+  // config
+  case "-c":
+    var conf = argv[3] || "http.conf";
+    exists(conf, function (exist) {
+      if (exist)
+        nws.run(conf);
+      else
+        stdout(["\"" + conf + "\" is not found."]);
+    });
+    break;
+  // not set options
+  case false:
+    var conf = "http.conf";
+    exists(conf, function (exist) {
+      if (exist)
+        nws.run(conf);
+      else
+        nws.run({docRoot: "./"});
+    });
+    break;
+  // host:port
+  default:
+    var hostport = argv[2] && argv[2].split(":"),
+      host = hostport && hostport[1] && hostport[0],
+      port = hostport && (hostport[1] ? hostport[1] : hostport[0]);
+      
+    host && settings.host = host;
+    port && settings.port = port;
+    settings.docRoot = "./";
+    
+    nws.run(settings);
+    break;
 }
