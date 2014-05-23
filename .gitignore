@@ -1,2 +1,12 @@
-.*/
+.*
+!.gitignore
+
+# Windows
 Thumbs.db
+
+# Node.js
+node_modules
+*.log
+
+# Travis CI
+!.travis.yml

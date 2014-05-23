@@ -31,5 +31,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ww24/node-web-server"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.19.0"
   }
 }
