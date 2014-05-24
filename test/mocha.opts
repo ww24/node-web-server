@@ -1,5 +1,4 @@
 --colors
---require chai
 --reporter spec
 --ui bdd
 --timeout 1000

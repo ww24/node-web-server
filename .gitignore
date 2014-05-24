@@ -10,3 +10,6 @@ node_modules
 
 # Travis CI
 !.travis.yml
+
+# Coverage
+coverage.html
