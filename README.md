@@ -117,9 +117,14 @@ Testing
 npm test
 ```
 
-### Coverage
+### Coverage (blanket)
 ```
 mocha -r blanket -R html-cov > coverage.html
+```
+
+### Coverage (istanbul)
+```
+istanbul cover ./node_modules/mocha/bin/_mocha
 ```
 
 Changelog
