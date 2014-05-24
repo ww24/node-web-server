@@ -1,4 +1,4 @@
-node-web-server [![Build Status](https://travis-ci.org/ww24/node-web-server.svg?branch=master)](https://travis-ci.org/ww24/node-web-server)
+node-web-server [![NPM Version][npm-img]][npm-url] [![Build Status][travis-img]][travis-url] [![Coverage Status][coveralls-img]][coveralls-url]
 ===============
 PC 上で簡単に導入できる簡易的な静的ファイル用 Web サーバです。
 
@@ -28,7 +28,7 @@ Options:
 ```
 
 ### Script
-```js
+```
 nws.run(settings(string or object), [current_directory]);
 ```
 
@@ -41,9 +41,9 @@ example.js
 var nws = require('node-web-server');
 // 起動 (__dirname を current directory として localhost:8080 で起動)
   nws.run({
-      host: "localhost",
-  	port: 8080,
-  	docRoot: "www"
+    host: "localhost",
+    port: 8080,
+    docRoot: "www"
   }, __dirname);
 // 10秒後に停止
 setTimeout(nws.stop, 10000);
@@ -54,37 +54,37 @@ Configuration
 /lib/http.conf
 ```json
 {
-	"host"			: ホスト名 or IPアドレス or 環境変数 (process.env.*),
-	"port"			: ポート番号 or 環境変数 (process.env.*),
-	"docRoot"		: ドキュメントルート (相対パス),
-	"defFile"		: [
-		デフォルトのインデックスファイル
-	],
-	"accesslog"		: HTTP リクエストのログファイル (相対パス) or false,
-	"errorLog"		: エラー発生時のログファイル (相対パス) or false,
-	"httpHeaders"	: {
-		HTTPヘッダー
-	},
-	"MIME"			: {
-		MIMEタイプ
-	}
+  "host"       : ホスト名 or IPアドレス or 環境変数 (process.env.*),
+  "port"       : ポート番号 or 環境変数 (process.env.*),
+  "docRoot"    : ドキュメントルート (相対パス),
+  "defFile"    : [
+    デフォルトのインデックスファイル
+  ],
+  "accesslog"  : HTTP リクエストのログファイル (相対パス) or false,
+  "errorLog"   : エラー発生時のログファイル (相対パス) or false,
+  "httpHeaders": {
+    HTTPヘッダー
+  },
+  "MIME"      : {
+    MIMEタイプ
+  }
 }
 ```
 
 ex. Cloud Foundry
 ```
 {
-	"host"			: "0.0.0.0",
-	"port"			: "process.env.VCAP_APP_PORT || 3000",
-	<The rest is omitted>
+  "host"      : "0.0.0.0",
+  "port"      : "process.env.VCAP_APP_PORT || 3000",
+  <The rest is omitted>
 ```
 
 ex. Heroku
 ```
 {
-	"host"			: "0.0.0.0",
-	"port"			: "process.env.PORT || 3000",
-	<The rest is omitted>
+  "host"      : "0.0.0.0",
+  "port"      : "process.env.PORT || 3000",
+  <The rest is omitted>
 ```
 
 '||' 演算子を使うことができます。
@@ -94,22 +94,22 @@ Logging
 -------
 ログは下記のように記録されます (アクセスログの例)
 
-	{
-		"date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
-		"method":"GET",
-		"url":"/",
-		"statusCode":200
-	}
-	,{
-		"date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
-		"method":"GET",
-		"url":"style.css",
-		"statusCode":200
-	}
+  {
+    "date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
+    "method":"GET",
+    "url":"/",
+    "statusCode":200
+  }
+  ,{
+    "date":"Fri, Sep 30 2011 20:26:11 GMT-0900",
+    "method":"GET",
+    "url":"style.css",
+    "statusCode":200
+  }
 
 これを `[]` で囲むことで、JavaScriptの配列として読み込むことが出来ます。
 
-	var obj = JSON.parse("[" + log + "]");
+  var obj = JSON.parse("[" + log + "]");
 
 Testing
 -------
@@ -172,3 +172,10 @@ Changelog
 
 ### v1.0.0: 2011/08/11
 - Release
+
+[npm-url]: https://www.npmjs.org/package/node-web-server
+[npm-img]: https://img.shields.io/npm/v/node-web-server.svg?style=flat
+[travis-url]: https://travis-ci.org/ww24/node-web-server
+[travis-img]: https://img.shields.io/travis/ww24/node-web-server.svg?branch=master&style=flat
+[coveralls-url]: https://coveralls.io/r/ww24/node-web-server?branch=master
+[coveralls-img]: https://img.shields.io/coveralls/ww24/node-web-server.svg?style=flat
