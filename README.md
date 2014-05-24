@@ -65,6 +65,7 @@ Configuration
   "httpHeaders": {
     HTTPヘッダー
   },
+  "allowUnknownMIMEType": MIMEType が一致しない場合に application/octet-stream で転送することを許可します true or false,
   "MIME"      : {
     MIMEタイプ
   }
@@ -129,6 +130,11 @@ istanbul cover ./node_modules/mocha/bin/_mocha
 
 Changelog
 ---------
+### v1.1.3: 2014/05/25
+- デフォルトで access.log を出力しないようになりました。
+- テストを追加しました。
+- `allowUnknownMIMEType` オプションを追加しました。
+
 ### v1.1.2: 2012/07/15
 - README の間違いを訂正しました。
 - 相対パスの扱いを修正しました。
