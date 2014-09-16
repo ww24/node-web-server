@@ -60,7 +60,7 @@ Configuration
   "defFile"    : [
     デフォルトのインデックスファイル
   ],
-  "accesslog"  : HTTP リクエストのログファイル (相対パス) or false,
+  "accessLog"  : HTTP リクエストのログファイル (相対パス) or false,
   "errorLog"   : エラー発生時のログファイル (相対パス) or false,
   "httpHeaders": {
     HTTPヘッダー
