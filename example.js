@@ -1,4 +1,4 @@
-var nws = require('./lib/index.js');
+var nws = require("./lib/index.js");
 
 nws.stop();
 // => Server is not running.
