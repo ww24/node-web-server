@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
+"use strict";
+
 var path = require("path"),
     fs = require("fs"),
     nws = require("../lib/index.js"),
     argv = process.argv,
     settings = {};
 
-exists = fs.exists || path.exists;
+var exists = fs.exists || path.exists;
 
 function stdout(str) {
   str = typeof str === "string" ? str.split("\n") : str.concat("");
@@ -31,7 +33,7 @@ switch (argv[2] || false) {
     break;
   // version
   case "-v":
-    stdout([nws.version]);
+    stdout(["v" + nws.version]);
     break;
   // template
   case "-d":
@@ -72,8 +74,8 @@ switch (argv[2] || false) {
       host = hostport && hostport[1] && hostport[0],
       port = hostport && (hostport[1] ? hostport[1] : hostport[0]);
       
-    host && settings.host = host;
-    port && settings.port = port;
+    host && (settings.host = host);
+    port && (settings.port = port);
     settings.docRoot = "./";
     
     nws.run(settings);
