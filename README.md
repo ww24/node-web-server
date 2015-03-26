@@ -130,6 +130,11 @@ istanbul cover ./node_modules/mocha/bin/_mocha
 
 Changelog
 ---------
+### v1.1.4: 2015/03/26
+- Node.js v0.12 対応
+- io.js 対応
+- v0.6 対応切り捨て
+
 ### v1.1.3: 2014/05/25
 - デフォルトで access.log を出力しないようになりました。
 - テストを追加しました。
