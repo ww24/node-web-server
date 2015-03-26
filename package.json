@@ -12,7 +12,7 @@
     "url": "http://ww24.info"
   },
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=0.8.0"
   },
   "main": "./lib/index.js",
   "bin": {
@@ -48,7 +48,7 @@
     "blanket": "~1.1.6",
     "chai": "~1.10.0",
     "coveralls": "~2.11.2",
-    "istanbul": "~0.3.11",
+    "istanbul": "~0.2.16",
     "mocha": "~2.2.1"
   }
 }
